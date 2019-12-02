@@ -1,52 +1,96 @@
-<?php include('haut.php'); ?>
-
 <?php
-$ArticleParPage = 5;
-$ArticleTotalesReq = $bdd->query('SELECT id FROM billets');
-$ArticleTotales = $ArticleTotalesReq->rowCount();
-$pagesTotales = ceil($ArticleTotales/$ArticleParPage);
-if(isset($_GET['page']) AND !empty($_GET['page']) AND $_GET['page'] > 0 AND $_GET['page'] <= $pagesTotales) {
-    $_GET['page'] = intval($_GET['page']);
-    $pageCourante = $_GET['page'];
+require_once('lib/autoload.php');
+$bdd = DBApp::getDatabase();
+$managernews = new ArticleManagerPDO($bdd);
+$managercomments = new CommentaireManagerPDO($bdd);
+require_once('controller/controllerindex.php');
+$erreurr = array();
+
+if(isset($_SESSION['statu'])){
+    $statu = $_SESSION['statu'];
 }else{
-    $pageCourante = 1;
+    $statu = null;
 }
-$depart = ($pageCourante-1)*$ArticleParPage;
-?>
+if(isset($_SESSION['pseudo'])){
+    $pseudo = $_SESSION['pseudo'];
+}else{
+    $pseudo = null;
+}
+if(isset($_SESSION['id'])){
+    $id = $_SESSION['id'];
+}else{
+    $id = null;
+}
+if(isset($_COOKIE['nbcommentaire'])){
+    $nbcommentaire = $_COOKIE['nbcommentaire'];
+}else{
+    $nbcommentaire = 0;
+}
+if(isset($_COOKIE['pseudo'])){
+    $cookiepseudo = $_COOKIE['pseudo'];
+}else{
+    $cookiepseudo = null;
+}
+if(isset($_COOKIE['password'])){
+    $cookiepassword = $_COOKIE['password'];
+}else{
+    $cookiepassword = null;
+}
+if(isset($_COOKIE['statu'])){
+    $cookiestatu = $_COOKIE['password'];
+}else{
+    $cookiestatu = null;
+}
+if(isset($_POST['commentaire'])){
+    $postcommentaire = $_POST['commentaire'];
+}
+if(isset($_GET['id_billet'])){
+    $articleID = $_GET['id_billet'];
+}
+if(isset($_GET['id_commentaire'])){
+    $commentaireID = $_GET['id_commentaire'];
+}
 
-<main role="main" class="flex-shrink-0">
-    <div class="container">
-        <h1 class="mt-5"> Actualités :</h1>
-        <div class="blog-post">
-            <?php 
-                $reponse = $bdd->query('select id,contenu,titre, DAY(date_creation) AS jour, MONTH(date_creation) AS mois, YEAR(date_creation) AS annee, HOUR(date_creation) AS heure, MINUTE(date_creation) AS minute, SECOND(date_creation) AS seconde from billets order by date_creation limit '.$depart.','.$ArticleParPage);
-                while($donnees = $reponse->fetch()){
-                    echo '<a style="text-decoration:none;" class="reinitialise" href="commentaires.php?id_billet='.$donnees['id'].'">';
-                    echo '<div>';
-                    echo '<h2 class="blog-post-title">'.$donnees['titre'].'</h2>';
-                    echo '<p class="blog-post-meta">Le '.$donnees['jour'].'/'.$donnees['mois'].'/'.$donnees['annee'].' à '.$donnees['heure'].'h'.$donnees['minute'].'</p>';
-                    echo '<p 
-                    style="max-height: 2em;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;">'.$donnees['contenu'].'</p>';
-                    echo '</div>';
-                    echo '</a>';
+try{
+    if (isset($_GET['action'])){
+        $action = $_REQUEST['action'];
+        switch($action){
+            case 'listeArticle': 
+                listeArticle($bdd,$pseudo,$id,$statu,$managernews,$managercomments);
+            break;
+            case 'Article':
+                if (isset($articleID) && $articleID > 0) {
+                    Article($bdd,$articleID,$pseudo,$id,$statu,$managernews,$managercomments);
                 }
-                $reponse->closeCursor();
-            ?>
-        </div>
-
-        <?php
-        for($i=1;$i<=$pagesTotales;$i++) {
-            if($i == $pageCourante) {
-                echo '<button>'.$i.'</button>';
-            } else {
-                echo '<a href="index.php?page='.$i.'"><button>'.$i.'</button></a> ';
-            }
+                else {
+                    throw new Exception('Erreur : aucun identifiant de billet envoyé');
+                }
+            break;
+            case 'addCommententaire':
+                if (isset($articleID) && $articleID > 0) {
+                    if (!empty($pseudo) && !empty($postcommentaire)) {
+                        addCommententaire($bdd,$articleID,$pseudo, $postcommentaire,$managercomments);
+                    }
+                    else {
+                        throw new Exception('Erreur : tous les champs ne sont pas remplis !');
+                    }
+                }
+                else {
+                    throw new Exception('Erreur : aucun identifiant de billet envoyé');
+                }
+            break;
+            case 'delCommentaire' :
+                delCommentaire($bdd,$commentaireID,$articleID,$managercomments);
+            break;
+            default :
+                throw new Exception('Erreur : Erreur d\'appel php');
+                listeArticle($bdd,$pseudo,$id,$statu,$managernews,$managercomments);
+            break;
         }
-        ?>
-        
-    </div>
-</main>
-<?php include('bas.php'); ?>
+    }else {
+        listeArticle($bdd,$pseudo,$id,$statu,$managernews,$managercomments);
+    }
+}catch (Exception $e){
+    echo $erreurr[] = $e->getMessage();
+}
+
