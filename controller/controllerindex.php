@@ -1,10 +1,9 @@
 <?php
 require_once('model/modelnews.php');
-require_once('model/modelbanni.php');
 
 function listeArticle($bdd, $pseudo, $id, $statu, $managernews, $managercomments)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    getBanni($bdd, $pseudo, $statu);
     list($ArticleParPage, $depart, $pagesTotales, $pageCourante) = getPage($bdd);
     $articles = $managernews->getList($depart, $ArticleParPage);
     $titre = 'Mon blog';
@@ -30,7 +29,7 @@ function Article($bdd, $articleID, $pseudo, $id, $statu, $managernews, $managerc
     require('view/template.php');
 }
 
-function addCommententaire($bdd, $articleID, $auteur, $postcommentaire , $managercomments)
+function addCommententaire($articleID, $auteur, $postcommentaire , $managercomments)
 {
     $com = new Commentaire($id_billet = $articleID, $auteur, $commentaire = $postcommentaire);
     $ligneaffecter = $managercomments->add($com);
@@ -41,9 +40,9 @@ function addCommententaire($bdd, $articleID, $auteur, $postcommentaire , $manage
     }
 }
 
-function delCommentaire($bdd, $commentaireID, $articleID,$managercomments)
+function delCommentaire($commentaireID, $articleID,$managercomments)
 {
-    $ligneaffecter = $managercomments->delete($articleID);
+    $ligneaffecter = $managercomments->delete($commentaireID);
     if ($ligneaffecter === false) {
         throw new Exception('Impossible de supprimer le commentaire !');
     } else {

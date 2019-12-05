@@ -1,14 +1,12 @@
 <?php
 require_once('model/modeladmin.php');
-require_once('model/modelhautbas.php');
-require_once('model/modelbanni.php');
 
-function PageAdmin($bdd, $pseudo, $statu, $recherche)
+function PageAdmin($bdd, $pseudo, $statu, $recherche, $managernews, $managercomments)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    getBanni($statu);
     $titre = 'Admin';
-    $comments = getCommentaires($bdd);
-    $membre = getMembre($bdd);
+    $comments = $managercomments->getList();
+    $membre = $managercomments->getList();
     $articles = findArticle($bdd, $recherche);
     ob_start();
     require('view/affichageadmin.php');
@@ -18,9 +16,10 @@ function PageAdmin($bdd, $pseudo, $statu, $recherche)
     require('view/template.php');
 }
 
-function delArticle($bdd, $articleID)
+
+function delArticle($articleID, $managernews)
 {
-    $ligneaffecter = suppArticle($bdd, $articleID);
+    $ligneaffecter = $managernews->delete($articleID);
     if ($ligneaffecter == false) {
         throw new Exception('Impossible de supprimer l\'article !');
     } else {
@@ -28,9 +27,9 @@ function delArticle($bdd, $articleID)
     }
 }
 
-function delCommentaire($bdd, $commentaireID)
+function delCommentaire($commentaireID, $managercomments)
 {
-    $ligneaffecter = suppCommentaire($bdd, $commentaireID);
+    $ligneaffecter = $managercomments->delete($commentaireID);
     if ($ligneaffecter == false) {
         throw new Exception('Impossible de supprimer le commentaire !');
     } else {
@@ -38,9 +37,10 @@ function delCommentaire($bdd, $commentaireID)
     }
 }
 
-function delMembre($bdd, $membreID, $getpseudo)
+function delMembre($membreID, $getpseudo, $managermembre, $managercomments)
 {
-    list($ligneaffecter1, $ligneaffecter2) = suppMembre($bdd, $membreID, $getpseudo);
+    $ligneaffecter1 = $managermembre->delete($membreID);
+    $ligneaffecter2 = $managercomments->delete($getpseudo);
     if ($ligneaffecter1 == false or $ligneaffecter2 == false) {
         throw new Exception('Impossible de supprimer le membre !');
     } else {
@@ -48,9 +48,12 @@ function delMembre($bdd, $membreID, $getpseudo)
     }
 }
 
-function Bannir($bdd, $membreID, $getpseudo)
+function Bannir($membreID, $getpseudo, $managermembre, $managercomments)
 {
-    list($ligneaffecter1, $ligneaffecter2) = ban($bdd, $membreID, $getpseudo);
+    $membre = $managermembre->getUnique($membreID);
+    $membre->setstatu('banni');
+    $ligneaffecter1 = $managermembre->update($membre);
+    $ligneaffecter2 = $managercomments->delete($getpseudo);
     if ($ligneaffecter1 == false or $ligneaffecter2 == false) {
         throw new Exception('Impossible de bannir le membre !');
     } else {
@@ -60,7 +63,7 @@ function Bannir($bdd, $membreID, $getpseudo)
 
 function PageajouterNews($bdd, $pseudo, $statu)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    getBanni($statu);
     $titre = 'Ajouter article';
     ob_start();
     require('view/affichageajouternews.php');
@@ -70,19 +73,26 @@ function PageajouterNews($bdd, $pseudo, $statu)
     require('view/template.php');
 }
 
-function addNews($bdd, $postcontenu, $posttitre)
+function addNews($bdd, $postcontenu, $posttitre, $managernews)
 {
-    list($ligneaffecter1, $ligneaffecter2) = postNews($bdd, $postcontenu, $posttitre);
-    if ($ligneaffecter1 == false or $ligneaffecter2 == false) {
-        throw new Exception('Impossible d\'ajouter l\'article !');
+    $ligneaffecter1 = $managernews->getUnique($posttitre);
+    if ($ligneaffecter1 != false) {
+        throw new Exception('<strong>Information : </strong> Titre dejà utilisé');
     } else {
-        header('Location: admin.php?action=admin');
+        Article article = new Article($postcontenu,$posttitre);
+        $ligneaffecter2 = $managernews->add()
+        list($ligneaffecter1, $ligneaffecter2) = postNews($bdd, $postcontenu, $posttitre);
+        if ($ligneaffecter2 == false) {
+            throw new Exception('Impossible d\'ajouter l\'article !');
+        } else {
+            header('Location: admin.php?action=admin');
+        }
     }
 }
 
 function PagemodifyNews($bdd, $pseudo, $statu, $articleID)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    $data = getBanni($statu);
     $titre = 'Modifier article';
     $article = getArticle($bdd, $articleID);
     ob_start();

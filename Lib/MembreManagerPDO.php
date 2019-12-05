@@ -1,5 +1,5 @@
 <?php
-class MembreManagerPDO extends MembreManager
+class MembreManagerPDO
 {
   protected $db;
   public function __construct(Database $db)

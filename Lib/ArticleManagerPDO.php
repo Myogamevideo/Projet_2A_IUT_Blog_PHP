@@ -1,5 +1,5 @@
 <?php
-class ArticleManagerPDO extends ArticleManager
+class ArticleManagerPDO
 {
   protected $db;
   public function __construct(Database $db)

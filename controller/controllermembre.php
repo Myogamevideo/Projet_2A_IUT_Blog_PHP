@@ -1,15 +1,14 @@
 <?php
 require_once('model/modelmembre.php');
-require_once('model/modelbanni.php');
 
 function Connexion($bdd, $id, $pseudo, $statu, $postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu, $managernews, $managercomments)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    getBanni($bdd, $pseudo, $statu);
     $titre = 'Connexion';
     ob_start();
     require('view/affichageconnexion.php');
     $content = ob_get_clean();
-    $connexion = getConnexion($bdd, $postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu);
+    $connexion = getConnexion($bdd, $postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu,$pseudo,$id,$statu);
     $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
     $nbarticle = $managernews->getNBArticle();
     require('view/template.php');

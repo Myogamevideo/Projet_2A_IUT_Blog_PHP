@@ -1,5 +1,5 @@
 <?php
-class CommentaireManagerPDO extends CommentaireManager
+class CommentaireManagerPDO
 {
   protected $db;
   public function __construct(Database $db)

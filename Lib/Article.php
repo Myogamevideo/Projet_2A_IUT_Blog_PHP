@@ -66,6 +66,10 @@ class Article
     if (!is_string($contenu) || empty($contenu)) {
       $this->erreurs[] = self::CONTENU_INVALIDE;
     } else {
+      $contenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $contenu);
+      $contenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<em>$1</em>', $contenu);
+      $contenu = preg_replace('#\[color=(red|green|blue|yellow|purple|olive)\](.+)\[/color\]#isU', '<span style="color:$1">$2</span>', $contenu);
+      $contenu = preg_replace('#http://[a-z0-9._/-]+#i', '<a href="$0">$0</a>', $contenu);
       $this->contenu = $contenu;
     }
   }

@@ -1,14 +1,9 @@
 <?php
-function getCommentaires($bdd)
+function getBanni($statu)
 {
-    $comments = $bdd->query('select C.id, C.id_billet , B.titre , C.auteur , C.commentaire , C.date_commentaire from billets B , commentaires C where C.id_billet=B.id');
-    return $comments;
-}
-
-function getMembre($bdd)
-{
-    $membre = $bdd->query('select id, pseudo , email , date_inscription , statu from membres');
-    return $membre;
+    if (isset($statu) and $statu == 'banni') {
+        header('location: affichagebanni.php');
+    }
 }
 
 function findArticle($bdd, $recherche)
@@ -24,38 +19,6 @@ function findArticle($bdd, $recherche)
     return $articles;
 }
 
-function suppArticle($bdd, $articleID)
-{
-    $ligneaffecter = $bdd->prepare('delete from billets where id=?');
-    $ligneaffecter->execute(array($articleID));
-    return $ligneaffecter;
-}
-
-function suppCommentaire($bdd, $commentaireID)
-{
-    $ligneaffecter = $bdd->prepare('delete from commentaires where id=?');
-    $ligneaffecter->execute(array($commentaireID));
-    return $ligneaffecter;
-}
-
-function suppMembre($bdd, $membreID, $getpseudo)
-{
-    $ligneaffecter1 = $bdd->prepare('delete from commentaires where auteur=?');
-    $ligneaffecter1->execute(array($getpseudo));
-    $ligneaffecter2 = $bdd->prepare('delete from membres where id=?');
-    $ligneaffecter2->execute(array($membreID));
-    return array($ligneaffecter1, $ligneaffecter2);
-}
-
-function ban($bdd, $membreID, $getpseudo)
-{
-    $ligneaffecter1 = $bdd->prepare('update membres set statu=\'banni\' where id=?');
-    $ligneaffecter1->execute(array($membreID));
-    $ligneaffecter2 = $bdd->prepare('delete from commentaires where auteur=?');
-    $ligneaffecter2->execute(array($getpseudo));
-    return array($ligneaffecter1, $ligneaffecter2);
-}
-
 function postNews($bdd, $postcontenu, $posttitre)
 {
     $postcontenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $postcontenu);
@@ -68,22 +31,6 @@ function postNews($bdd, $postcontenu, $posttitre)
     if ($donne['nbr'] != 0) {
         throw new Exception('<strong>Information : </strong> Titre dejà utilisé');
     } else {
-        /*
-        if(isset($_FILES['fichier'])){
-            $content_dir = 'images/';
-            $tmp_file = $_FILES['fichier']['tmp_name'];
-            if(!is_uploaded_file($tmp_file)){
-                echo 'Le fichier est introuvable';
-            }
-            $type_file = $_FILES['fichier']['type'];
-            if(!strstr($type_file, 'jpg') && !strstr($type_file, 'jpeg') && !strstr($type_file, 'bmp') && !strstr($type_file, 'gif') ){
-                echo 'Le fichier n\'est pas une image';
-            }
-            $name_file = $_FILES['fichier']['name'];
-            if(!move_uploaded_file($tmp_file, $content_dir . $name_file)){
-                echo 'Impossible de copier le fichier dans '.$content_dir.'';
-            }
-        }*/
         $ligneaffecter2 = $bdd->prepare('insert into billets (titre,contenu,date_creation) values (:titre,:contenu,now())');
         $ligneaffecter2->execute(array(
             'titre' => $posttitre,
