@@ -1,6 +1,7 @@
 <?php
-require_once('lib/autoload.php');
+require_once('Lib/autoload.php');
 $bdd = DBApp::getDatabase();
+session_start();
 $managercomments = new CommentaireManagerPDO($bdd);
 $managermembre = new MembreManagerPDO($bdd);
 $managernews = new ArticleManagerPDO($bdd);
@@ -86,11 +87,13 @@ try{
             break;
             case 'profil':
                 if(isset($postpseudo) and isset($postemail)){
-                    ModifierProfil($bdd,$pseudo,$statu,$postpseudo,$postemail, $managernews, $managercomments);
+                    ModifierProfil($bdd,$pseudo,$statu,$postpseudo,$postemail, $managernews, $managercomments,$managermembre);
+                    $_SESSION['pseudo'] = $pseudo;
+                    $pseudo = $postpseudo;
                 }elseif(isset($commentaireID)){
-                    delCommentaire($bdd,$commentaireID,$managercomments, $managernews, $managercomments);
+                    delCommentaire($commentaireID,$managercomments);
                 }else{
-                    PageProfil($bdd,$pseudo,$statu,$managercomments, $managernews, $managercomments);
+                    PageProfil($bdd,$pseudo,$statu,$managernews, $managercomments,$managermembre);
                 }
             break;
             default:

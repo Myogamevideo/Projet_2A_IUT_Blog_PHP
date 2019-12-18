@@ -111,48 +111,20 @@ function getDeconnexion($bdd)
     header('location: index.php');
 }
 
-function getProfil($bdd, $pseudo)
+function updateProfil(Membre $profil , $pseudo , $email)
 {
-    $req = $bdd->prepare('select * from membres where pseudo=?');
-    $req->execute(array($pseudo));
-    $profil = $req->fetch();
-    return $profil;
+  $query = 'SELECT count(*) AS nbr FROM membres WHERE pseudo = :pseudo';
+  $requete = $this->db->query($query, array(':pseudo' => (String) $pseudo));
+  $data = $requete->fetch(PDO::FETCH_ASSOC);
+  if ($data['nbr'] != 0) {
+      throw new Exception('<strong>Information : </strong> pseudo dejà utilisé');
+  } else {
+    $query = 'UPDATE membres SET pseudo = :pseudo, email = :email WHERE pseudo = "' . $profil->getpseudo() . '"';
+    $requete = $this->db->query($query, array(':pseudo' => (String) $pseudo , ':email' => (String) $email));
+    $query = 'UPDATE commentaires SET auteur = :pseudo WHERE auteur = "' . $profil->getpseudo() . '"';
+    $requete = $this->db->query($query, array(':pseudo' => (String) $pseudo));
+    $_SESSION['pseudo'] = $pseudo;
+    header('location: membre.php?action=profil');
+  }
 }
 
-function modifyProfil($bdd, $postpseudo, $postemail, $profil)
-{
-    if (isset($postpseudo) && isset($postemail) && $postpseudo != NULL && $postemail != NULL) {
-        $req = $bdd->prepare('select count(*) as nbr from membres where pseudo=?');
-        $req->execute(array($postpseudo));
-        $data = $req->fetch(PDO::FETCH_ASSOC);
-        if ($data['nbr'] != 0) {
-            throw new Exception('<strong>Information : </strong> pseudo dejà utilisé');
-        } else {
-            $req = $bdd->prepare('update membres set pseudo=:pseudo, email=:email where pseudo="' . $profil['pseudo'] . '"');
-            $req->execute(array(
-                'pseudo' => $postpseudo,
-                'email' => $postemail,
-            ));
-            $req = $bdd->prepare('update commentaires set auteur=:pseudo where auteur="' . $profil['pseudo'] . '"');
-            $req->execute(array('pseudo' => $postpseudo));
-            $_SESSION['pseudo'] = $postpseudo;
-            header('location: membre.php?action=profil');
-        }
-    } else {
-        throw new Exception('<strong>Information : </strong> Un ou plusieurs champs sont vide');
-    }
-}
-
-function getCommentaire($bdd, $pseudo)
-{
-    $comments = $bdd->prepare('select C.id , B.titre , C.auteur , C.commentaire , C.date_commentaire from billets B , commentaires C where C.id_billet=B.id and C.auteur=?');
-    $comments->execute(array($pseudo));
-    return $comments;
-}
-
-function suppCommentaire($bdd, $commentaireID)
-{
-    $ligneaffecter = $bdd->prepare('delete from commentaires where id=?');
-    $ligneaffecter->execute(array($commentaireID));
-    return $ligneaffecter;
-}

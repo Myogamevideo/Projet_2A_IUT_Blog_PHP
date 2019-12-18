@@ -1,5 +1,5 @@
 <?php
-class Article
+class Membre
 {
     protected $error = [];
     protected $id;
@@ -56,7 +56,7 @@ class Article
     {
         return $this->statu;
     }
-    public function date_inscription()
+    public function getdate_inscription()
     {
         return $this->date_inscription;
     }
@@ -97,7 +97,7 @@ class Article
             $this->statu = $statu;
         }
     }
-    public function setdate_inscription(Date $date_inscription)
+    public function setdate_inscription(DateTime $date_inscription)
     {
         $this->date_inscription = $date_inscription;
     }

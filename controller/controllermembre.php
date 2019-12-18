@@ -34,7 +34,8 @@ function Inscription($bdd, $pseudo, $id, $statu, $postpseudo, $postpassword, $po
     require('view/affichageinscription.php');
     $content = ob_get_clean();
     $inscription = getInscription($bdd, $postpseudo, $postpassword, $postconfig_password, $postemail);
-    $nbcommentaire = getNBCommentaire($bdd, $pseudo);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 
@@ -56,39 +57,41 @@ function Deconnexion($bdd)
     getDeconnexion($bdd);
 }
 
-function ModifierProfil($bdd, $pseudo, $statu, $postpseudo, $postemail, $managernews, $managercomments)
+function ModifierProfil($bdd, $pseudo, $statu, $postpseudo, $postemail, $managernews, $managercomments,$managersmembre)
 {
     $data = getBanni($bdd, $pseudo, $statu);
     $titre = 'Profil';
-    $comments = getCommentaire($bdd, $pseudo);
-    $profil = getProfil($bdd, $pseudo);
+    $comments = $managercomments->getListCommentaireByPseudo($pseudo);
+    $profil = $managersmembre->getUniqueByPseudo($pseudo);
     ob_start();
     require('view/affichageprofil.php');
     $content = ob_get_clean();
-    $modifierprofil = modifyProfil($bdd, $postpseudo, $postemail, $profil);
-        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $mem = new Membre(['id' => $profil->getid(),'pseudo' => $postpseudo,'pass' => $profil->getpass(),'email' => $postemail]);
+    $modifierprofil = $managersmembre->update($mem);
+    $modifiercommentaire = $managercomments->updateWithProfil($profil->getid() , $postpseudo);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
     $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 
-function PageProfil($bdd, $pseudo, $statu, $managernews, $managercomments)
+function PageProfil($bdd, $pseudo, $statu, $managernews, $managercomments,$managersmembre)
 {
     $data = getBanni($bdd, $pseudo, $statu);
     $titre = 'Profil';
-    $comments = getCommentaire($bdd, $pseudo);
-    $profil = getProfil($bdd, $pseudo);
+    $comments = $managercomments->getListCommentaireByPseudo($pseudo);
+    $profil = $managersmembre->getUniqueByPseudo($pseudo);
     ob_start();
     require('view/affichageprofil.php');
     $content = ob_get_clean();
-        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
     $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 
-function delCommentaire($bdd, $commentaireID)
+function delCommentaire($commentaireID, $managercomments)
 {
-    $ligneaffecter = suppCommentaire($bdd, $commentaireID);
-    if ($ligneaffecter === false) {
+    $ligneaffecter = $managercomments->delete($commentaireID);
+    if ($ligneaffecter == false) {
         throw new Exception('Impossible de supprimer le commentaire !');
     } else {
         header('Location: membre.php?action=profil');

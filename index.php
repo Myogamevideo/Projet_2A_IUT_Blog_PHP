@@ -1,6 +1,7 @@
 <?php
-require_once('lib/autoload.php');
+require_once('Lib/autoload.php');
 $bdd = DBApp::getDatabase();
+session_start();
 $managernews = new ArticleManagerPDO($bdd);
 $managercomments = new CommentaireManagerPDO($bdd);
 require_once('controller/controllerindex.php');
@@ -69,7 +70,7 @@ try{
             case 'addCommententaire':
                 if (isset($articleID) && $articleID > 0) {
                     if (!empty($pseudo) && !empty($postcommentaire)) {
-                        addCommententaire($bdd,$articleID,$pseudo, $postcommentaire,$managercomments);
+                        addCommententaire($articleID,$pseudo, $postcommentaire,$managercomments);
                     }
                     else {
                         throw new Exception('Erreur : tous les champs ne sont pas remplis !');
@@ -80,7 +81,7 @@ try{
                 }
             break;
             case 'delCommentaire' :
-                delCommentaire($bdd,$commentaireID,$articleID,$managercomments);
+                delCommentaire($commentaireID,$articleID,$managercomments);
             break;
             default :
                 throw new Exception('Erreur : Erreur d\'appel php');

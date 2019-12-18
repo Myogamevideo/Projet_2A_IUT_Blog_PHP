@@ -32,7 +32,11 @@ class Commentaire
   {
     return !(empty($this->auteur) || empty($this->commentaire));
   }
-
+  
+  public function getid_billet()
+  {
+    return $this->id_billet;
+  }
   public function getid()
   {
     return $this->id;
@@ -50,6 +54,10 @@ class Commentaire
     return $this->date_commentaire;
   }
 
+  public function setid_billet($id_billet)
+  {
+    $this->id_billet = (int) $id_billet;
+  }
   public function setid($id)
   {
     $this->id = (int) $id;

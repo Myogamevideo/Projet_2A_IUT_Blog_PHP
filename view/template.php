@@ -55,7 +55,6 @@
             }
             echo '</div>';
         }
-        var_dump($id);
         ?>
         
         <?= $content ?>

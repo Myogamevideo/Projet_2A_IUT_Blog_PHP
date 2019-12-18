@@ -10,7 +10,7 @@ class MembreManagerPDO
   protected function add(Membre $mem)
   {
     $query = 'INSERT INTO membres(pseudo, pass, email, date_inscription, statu) VALUES(:pseudo,:pass,:email,NOW(),:statu)';
-    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email', $mem => getemail(), ':statu' => getstatu()));
+    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail(), ':statu' => $mem->getsatu()));
   }
 
   public function count()
@@ -38,28 +38,27 @@ class MembreManagerPDO
     return $listeMembre;
   }
 
-  public function getListUnique($id)
+  public function getUniqueByID($id)
   {
-    $query = 'SELECT id, pseudo, pass, email, date_inscription, statu FROM membres WHERE id = :id ORDER BY id DESC';
-    $requete = $this->db->query($query, array(':id' => (int) $id));
-    $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Membre');
-    $listeMembre = $requete->fetchAll();
-    $requete->closeCursor();
-    return $listeMembre;
-  }
-
-  public function getUnique($id)
-  {
-    $query = 'SELECT id, pseudo, pass, email, date_inscription, statu FROM membres WHERE id_billet = :id_billet';
+    $query = 'SELECT id, pseudo, pass, email, date_inscription, statu FROM membres WHERE id = :id';
     $requete = $this->db->query($query, array(':id_billet' => (int) $id));
     $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Membre');
     $membre = $requete->fetch();
     return $membre;
   }
 
-  protected function update(Membre $mem)
+  public function getUniqueByPseudo($pseudo)
   {
-    $query = 'UPDATE membres SET pseudo = :pseudo, pass = :pass, date_inscription = NOW(), email= :email, statu= :statu WHERE id = :id';
-    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail()));
+    $query = 'SELECT id, pseudo, pass, email, date_inscription, statu FROM membres WHERE pseudo = :pseudo';
+    $requete = $this->db->query($query, array(':pseudo' => (String) $pseudo));
+    $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Membre');
+    $membre = $requete->fetch();
+    return $membre;
+  }
+
+  public function update(Membre $mem)
+  {
+    $query = 'UPDATE membres SET pseudo = :pseudo, pass = :pass, email= :email WHERE id = :id';
+    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail() , ':id' => $mem->getid()));
   }
 }

@@ -1,0 +1,7 @@
+dans view/affichagecommentaires.php
+
+tu ajoute ligne  7
+
+        echo '<p>' . nl2br($article->getcontenu()) . '</p>';
+
+a la place de la ligne

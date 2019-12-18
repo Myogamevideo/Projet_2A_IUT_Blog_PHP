@@ -1,11 +1,18 @@
 <?php
-require_once('lib/autoload.php');
+require_once('Lib/autoload.php');
 $bdd = DBApp::getDatabase();
+session_start();
 $managernews = new ArticleManagerPDO($bdd);
 $managercomments = new CommentaireManagerPDO($bdd);
 $managermembre = new MembreManagerPDO($bdd);
-require_once('controller/controllerindex.php');
+require_once('controller/controlleradmin.php');
 $erreurr = array();
+
+if(isset($_POST['recherche'])){
+    $recherche = $_POST['recherche'];
+}else{
+    $recherche = null;
+}
 
 if (isset($_SESSION['statu'])) {
     $statu = $_SESSION['statu'];
@@ -57,7 +64,7 @@ try {
         $action = $_REQUEST['action'];
         switch ($action) {
             case 'admin':
-                PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments);
+                PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre);
                 break;
             case 'delArticle':
                 if (isset($articleID)) {
@@ -70,21 +77,21 @@ try {
                 if (isset($commentaireID)) {
                     delCommentaire($commentaireID,$managercomments);
                 } else {
-                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments);
+                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre);
                 }
                 break;
             case 'delMembre':
                 if (isset($membreID) and isset($getpseudo)) {
                     delMembre($membreID, $getpseudo, $managermembre , $managercomments );
                 } else {
-                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments);
+                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre);
                 }
                 break;
             case 'bannirMembre':
                 if (isset($membreID) and isset($getpseudo)) {
                     Bannir($membreID, $getpseudo,$managernews,$managercomments);
                 } else {
-                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments);
+                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre);
                 }
                 break;
             case 'ajouterNews':

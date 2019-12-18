@@ -17,9 +17,9 @@ function listeArticle($bdd, $pseudo, $id, $statu, $managernews, $managercomments
 
 function Article($bdd, $articleID, $pseudo, $id, $statu, $managernews, $managercomments)
 {
-    $data = getBanni($bdd, $pseudo, $statu);
+    getBanni($bdd, $pseudo, $statu);
     $article = $managernews->getUnique((int) $articleID);
-    $commentaires = $managercomments->getListUnique((int) $articleID);
+    $commentaires = $managercomments->getListCommentaireByBillet((int) $articleID);
     $titre = 'Commentaire';
     ob_start();
     require('view/affichagecommentaires.php');
@@ -29,9 +29,9 @@ function Article($bdd, $articleID, $pseudo, $id, $statu, $managernews, $managerc
     require('view/template.php');
 }
 
-function addCommententaire($articleID, $auteur, $postcommentaire , $managercomments)
+function addCommententaire($articleID,$pseudo, $postcommentaire,$managercomments)
 {
-    $com = new Commentaire($id_billet = $articleID, $auteur, $commentaire = $postcommentaire);
+    $com = new Commentaire(['id_billet' => $articleID, 'auteur' => $pseudo, 'commentaire' => $postcommentaire]);
     $ligneaffecter = $managercomments->add($com);
     if($ligneaffecter == false) {
         throw new Exception('Impossible d\'ajouter le commentaire !');
@@ -43,7 +43,7 @@ function addCommententaire($articleID, $auteur, $postcommentaire , $managercomme
 function delCommentaire($commentaireID, $articleID,$managercomments)
 {
     $ligneaffecter = $managercomments->delete($commentaireID);
-    if ($ligneaffecter === false) {
+    if ($ligneaffecter == false) {
         throw new Exception('Impossible de supprimer le commentaire !');
     } else {
         header('Location: index.php?id_billet=' . $articleID . '&action=Article');

@@ -1,7 +1,7 @@
 <?php
 require_once('model/modeladmin.php');
 
-function PageAdmin($bdd, $pseudo, $statu, $recherche, $managernews, $managercomments)
+function PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre)
 {
     getBanni($statu);
     $titre = 'Admin';
@@ -72,15 +72,15 @@ function PageajouterNews($bdd, $pseudo, $statu)
     $nbarticle = getNBArticle($bdd);
     require('view/template.php');
 }
-
+/*
 function addNews($bdd, $postcontenu, $posttitre, $managernews)
 {
     $ligneaffecter1 = $managernews->getUnique($posttitre);
     if ($ligneaffecter1 != false) {
         throw new Exception('<strong>Information : </strong> Titre dejà utilisé');
     } else {
-        Article article = new Article($postcontenu,$posttitre);
-        $ligneaffecter2 = $managernews->add()
+        $article = new Article($postcontenu,$posttitre);
+        $ligneaffecter2 = $managernews->add($article)
         list($ligneaffecter1, $ligneaffecter2) = postNews($bdd, $postcontenu, $posttitre);
         if ($ligneaffecter2 == false) {
             throw new Exception('Impossible d\'ajouter l\'article !');
@@ -89,7 +89,7 @@ function addNews($bdd, $postcontenu, $posttitre, $managernews)
         }
     }
 }
-
+*/
 function PagemodifyNews($bdd, $pseudo, $statu, $articleID)
 {
     $data = getBanni($statu);

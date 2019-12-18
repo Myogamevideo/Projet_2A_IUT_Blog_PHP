@@ -3,7 +3,7 @@
         <h1 class="mt-5"> Profil :</h1>
         <?php
         $date = date("d/m/Y");
-        $date_inscription = date_create($profil['date_inscription']);
+        $date_inscription = date_create($profil->getdate_inscription());
         $date_inscription = date_format($date_inscription, 'd/m/Y');
         echo '<form method="POST" action="membre.php?action=profil">';
         ?>
@@ -17,11 +17,11 @@
             <tbody>
                 <tr>
                     <th scope="row">pseudo</th>
-                    <td><input name="pseudo" class="form-control" value="<?php echo $profil['pseudo']; ?>" /></td>
+                    <td><input name="pseudo" class="form-control" value="<?php echo $profil->getpseudo(); ?>" /></td>
                 </tr>
                 <tr>
                     <th scope="row">email</th>
-                    <td><input name="email" class="form-control" value="<?php echo $profil['email']; ?>" /></td>
+                    <td><input name="email" class="form-control" value="<?php echo $profil->getemail(); ?>" /></td>
                 </tr>
                 <tr>
                     <th scope="row">date_inscription</th>
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <th scope="row">statu</th>
-                    <td><input name="statu" class="form-control" disabled="disabled" value="<?php echo $profil['statu']; ?>" /></td>
+                    <td><input name="statu" class="form-control" disabled="disabled" value="<?php echo $profil->getsatu(); ?>" /></td>
                 </tr>
             </tbody>
         </table>
@@ -44,7 +44,6 @@
         <table class="table">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col">titre_billets</th>
                     <th scope="col">auteur</th>
                     <th scope="col">commentaire</th>
                     <th scope="col">date_commentaire</th>
@@ -52,17 +51,15 @@
             </thead>
             <tbody>
                 <?php
-                while ($donnees = $comments->fetch()) {
+                foreach($comments as $donnees) {
                     echo
                         '<tr>
-                        <td>' . $donnees['titre'] . '</td>
-                        <td>' . $donnees['auteur'] . '</td>
-                        <td>' . $donnees['commentaire'] . '</td>
-                        <td>' . $donnees['date_commentaire'] . '</td>
-                        <td><form method="POST" action="membre.php?action=profil&id_commentaire=' . $donnees['id'] . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
+                        <td>' . $donnees->getauteur() . '</td>
+                        <td>' . $donnees->getcommentaire() . '</td>
+                        <td>' . $donnees->getdate_commentaire() . '</td>
+                        <td><form method="POST" action="membre.php?action=profil&id_commentaire=' . $donnees->getid() . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
                     </tr>';
                 }
-                $comments->closeCursor();
                 ?>
             </tbody>
         </table>
