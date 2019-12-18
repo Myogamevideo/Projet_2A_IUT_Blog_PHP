@@ -2,6 +2,10 @@
     <div class="container">
         <h1 class="mt-5"> Page administration :</h1>
         <h3> Liste des articles :</h3>
+        <?php 
+            var_dump($news); 
+            var_dump($listearticle); 
+        ?>
         <form method="POST" action="admin.php?action=admin">
             <input type="search" name="recherche" class="form-control" placeholder="Recherche un article ..." />
             <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
@@ -18,26 +22,21 @@
             </thead>
             <tbody>
                 <?php
-                if ($articles->rowCount() > 0) {
-                    while ($a = $articles->fetch()) {
-                        $reponse = $bdd->prepare('select id,contenu,titre,date_creation from billets where titre=? order by date_creation');
-                        $reponse->execute(array($a['titre']));
-                        while ($donnees = $reponse->fetch()) {
-                            echo
-                                '<tr>
-                            <td>' . $donnees['id'] . '</td>
-                            <td>' . $donnees['titre'] . '</td>
-                            <td style="max-height: 2em;
-                            max-width: 30em;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            white-space: nowrap;">' . $donnees['contenu'] . '</td>
-                            <td>' . $donnees['date_creation'] . '</td>
-                            <td><form method="POST" action="admin.php?action=delArticle&id_billet=' . $donnees['id'] . '"> <input type="submit" value="Supprimer cette article"/></form></td>
-                            <td><form method="POST" action="admin.php?action=modifierNews&id_billet=' . $donnees['id'] . '"> <input type="submit" value="Modifier cette article"/></form></td>
-                        </tr>';
-                        }
-                        $reponse->closeCursor();
+                if (count($news) > 0) {
+                    foreach($listearticle as $donnees) {
+                        echo
+                            '<tr>
+                        <td>' . $donnees->getid() . '</td>
+                        <td>' . $donnees->gettitre() . '</td>
+                        <td style="max-height: 2em;
+                        max-width: 30em;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;">' . $donnees->getcontenu() . '</td>
+                        <td>' . $donnees->getdate_creation() . '</td>
+                        <td><form method="POST" action="admin.php?action=delArticle&id_billet=' . $donnees->getid() . '"> <input type="submit" value="Supprimer cette article"/></form></td>
+                        <td><form method="POST" action="admin.php?action=modifierNews&id_billet=' . $donnees->getid() . '"> <input type="submit" value="Modifier cette article"/></form></td>
+                    </tr>';
                     }
                 } else {
                     echo 'Aucun résultat pour: ' . $recherche . '...';
@@ -62,19 +61,17 @@
             </thead>
             <tbody>
                 <?php
-                while ($donnees = $comments->fetch()) {
+                foreach($comments as $donnees) {
                     echo
                         '<tr>
-                        <td>' . $donnees['id_billet'] . '</td>
-                        <td>' . $donnees['titre'] . '</td>
-                        <td>' . $donnees['id'] . '</td>
-                        <td>' . $donnees['auteur'] . '</td>
-                        <td>' . $donnees['commentaire'] . '</td>
-                        <td>' . $donnees['date_commentaire'] . '</td>
-                        <td><form method="POST" action="admin.php?id_commentaire=' . $donnees['id'] . '&action=delCommentaire"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
+                        <td>' . $donnees->getid_billet() . '</td>
+                        <td>' . $donnees->getid(). '</td>
+                        <td>' . $donnees->getauteur() . '</td>
+                        <td>' . $donnees->getcommentaire() . '</td>
+                        <td>' . $donnees->getdate_commentaire() . '</td>
+                        <td><form method="POST" action="admin.php?id_commentaire=' . $donnees->getid() . '&action=delCommentaire"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
                     </tr>';
                 }
-                $comments->closeCursor();
                 ?>
             </tbody>
         </table>
@@ -92,26 +89,25 @@
             </thead>
             <tbody>
                 <?php
-                while ($donnees = $membre->fetch()) {
+                foreach($membre as $donnees) {
                     echo
                         '<tr>
-                        <td>' . $donnees['id'] . '</td>
-                        <td>' . $donnees['pseudo'] . '</td>
-                        <td>' . $donnees['email'] . '</td>
-                        <td>' . $donnees['date_inscription'] . '</td>
-                        <td>' . $donnees['statu'] . '</td>';
+                        <td>' . $donnees->getid() . '</td>
+                        <td>' . $donnees->getpseudo() . '</td>
+                        <td>' . $donnees->getemail() . '</td>
+                        <td>' . $donnees->getdate_inscription() . '</td>
+                        <td>' . $donnees->getstatu() . '</td>';/*
                     $req = $bdd->prepare('select commentaire from commentaires where auteur=?');
                     $req->execute(array($donnees['pseudo']));
                     while ($data = $req->fetch()) {
                         echo '<td>' . $data['commentaire'] . '</td>';
                     }
-                    $req->closeCursor();
+                    $req->closeCursor();*/
 
-                    echo '<td><form method="POST" action="admin.php?action=delMembre&id_membre=' . $donnees['id'] . '&pseudo=' . $donnees['pseudo'] . '"> <input type="submit" value="Supprimer ce membre"/></form></td>
-                        <td><form method="POST" action="admin.php?action=bannirMembre&id_membre=' . $donnees['id'] . '&pseudo=' . $donnees['pseudo'] . '"> <input type="submit" value="Bannir ce membre"/></form></td>
+                    echo '<td><form method="POST" action="admin.php?action=delMembre&id_membre=' . $donnees->getid(). '&pseudo=' . $donnees->getpseudo() . '"> <input type="submit" value="Supprimer ce membre"/></form></td>
+                        <td><form method="POST" action="admin.php?action=bannirMembre&id_membre=' . $donnees->getid() . '&pseudo=' . $donnees->getpseudo() . '"> <input type="submit" value="Bannir ce membre"/></form></td>
                     </tr>';
                 }
-                $membre->closeCursor();
                 ?>
             </tbody>
         </table>

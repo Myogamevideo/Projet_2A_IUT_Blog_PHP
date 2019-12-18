@@ -52,7 +52,7 @@ class Membre
     {
         return $this->email;
     }
-    public function getsatu()
+    public function getstatu()
     {
         return $this->statu;
     }

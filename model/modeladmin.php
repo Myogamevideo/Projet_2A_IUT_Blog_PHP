@@ -6,19 +6,6 @@ function getBanni($statu)
     }
 }
 
-function findArticle($bdd, $recherche)
-{
-    $articles = $bdd->query('SELECT titre FROM billets ORDER BY id DESC');
-    if (isset($recherche) and !empty($recherche)) {
-        $resultat = htmlspecialchars($recherche);
-        $articles = $bdd->query('SELECT titre FROM billets WHERE titre LIKE "%' . $resultat . '%" ORDER BY id DESC');
-        if ($articles->rowCount() == 0) {
-            $articles = $bdd->query('SELECT titre FROM billets WHERE CONCAT(titre, contenu) LIKE "%' . $resultat . '%" ORDER BY id DESC');
-        }
-    }
-    return $articles;
-}
-
 function postNews($bdd, $postcontenu, $posttitre)
 {
     $postcontenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $postcontenu);

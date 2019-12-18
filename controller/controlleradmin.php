@@ -6,13 +6,14 @@ function PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercommen
     getBanni($statu);
     $titre = 'Admin';
     $comments = $managercomments->getList();
-    $membre = $managercomments->getList();
-    $articles = findArticle($bdd, $recherche);
+    $membre = $managermembre->getList();
+    $news = $managernews->findArticle($recherche);
+    $listearticle = $managernews->getListByTitre($news);
     ob_start();
     require('view/affichageadmin.php');
     $content = ob_get_clean();
-    $nbcommentaire = getNBCommentaire($bdd, $pseudo);
-    $nbarticle = getNBArticle($bdd);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 
@@ -68,8 +69,8 @@ function PageajouterNews($bdd, $pseudo, $statu)
     ob_start();
     require('view/affichageajouternews.php');
     $content = ob_get_clean();
-    $nbcommentaire = getNBCommentaire($bdd, $pseudo);
-    $nbarticle = getNBArticle($bdd);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 /*
@@ -98,8 +99,8 @@ function PagemodifyNews($bdd, $pseudo, $statu, $articleID)
     ob_start();
     require('view/affichagemodifiernews.php');
     $content = ob_get_clean();
-    $nbcommentaire = getNBCommentaire($bdd, $pseudo);
-    $nbarticle = getNBArticle($bdd);
+    $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+    $nbarticle = $managernews->getNBArticle();
     require('view/template.php');
 }
 

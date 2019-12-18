@@ -37,6 +37,35 @@ class ArticleManagerPDO
     return $listeNews;
   }
 
+  public function findArticle($recherche)
+  {
+    $query = 'SELECT titre FROM billets ORDER BY id DESC';
+    $articles = $this->db->query($query);
+    if (isset($recherche) and !empty($recherche)) {
+      $resultat = htmlspecialchars($recherche);
+      $query = 'SELECT titre FROM billets WHERE titre LIKE "%' . $resultat . '%" ORDER BY id DESC';
+      $articles = $this->db->query($query);
+      if ($articles->rowCount() == 0) {
+        $query = 'SELECT titre FROM billets WHERE CONCAT(titre, contenu) LIKE "%' . $resultat . '%" ORDER BY id DESC';
+        $articles = $this->db->query($query);
+      }
+    }
+    $news = $articles->fetch();
+    return $news;
+  }
+
+  public function getListByTitre($articles)
+  {
+    foreach($articles as $a){
+      $query = 'SELECT id, contenu, titre, date_creation FROM billets WHERE titre = :titre ORDER BY date_creation';
+      $requete = $this->db->query($query, array(':titre' => $a));
+      $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Article');
+      $listeArticle = $requete->fetchAll();
+      $requete->closeCursor();
+      return $listeArticle;
+    }
+  }
+
   public function getUnique($id)
   {
     $query = 'SELECT id, titre, contenu, date_creation FROM billets WHERE id = :id';
@@ -54,10 +83,10 @@ class ArticleManagerPDO
 
   public function getNBArticle()
   {
-      $query = 'SELECT count(id) AS nb FROM billets';
-      $requete =  $this->db->query($query);
-      $nbarticle = $requete->fetch(PDO::FETCH_ASSOC);
-      $requete->closeCursor();
-      return $nbarticle;
+    $query = 'SELECT count(id) AS nb FROM billets';
+    $requete =  $this->db->query($query);
+    $nbarticle = $requete->fetch(PDO::FETCH_ASSOC);
+    $requete->closeCursor();
+    return $nbarticle;
   }
 }

@@ -70,7 +70,7 @@ try {
                 if (isset($articleID)) {
                     delArticle($articleID,$managernews);
                 } else {
-                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments);
+                    PageAdmin($bdd, $pseudo, $statu, $recherche,$managernews,$managercomments,$managermembre);
                 }
                 break;
             case 'delCommentaire':
