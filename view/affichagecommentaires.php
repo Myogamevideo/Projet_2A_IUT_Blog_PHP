@@ -4,8 +4,7 @@
         <?php
         echo '<h2 class="blog-post-title">' . $article->gettitre() . '</h2>';
         echo '<p class="blog-post-meta">Paru le ' . $article->getdate_creation() . '</p>';
-        echo '<p>' . $article->getcontenu() . '</p>';
-        ?>
+        echo '<p>' . nl2br($article->getcontenu()) . '</p>';?>
         <h3> Ajouter un commentaire :</h3>
         <?php
         if (isset($pseudo) and $pseudo != NULL) {
