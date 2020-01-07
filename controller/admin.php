@@ -106,7 +106,6 @@ function delMembre($bdd, $erreurr)
 function addNews($bdd, $erreurr)
 {
     $postcontenu = $_POST['contenu'];
-    $postcontenu = filter_var($postcontenu,FILTER_SANITIZE_STRING);
     $posttitre = $_POST['titre'];
     $posttitre = filter_var($posttitre,FILTER_SANITIZE_STRING);
     Validator::validation_postcontenuandposttitre($postcontenu, $posttitre, $erreurr);
@@ -137,7 +136,6 @@ function modifyNews($bdd, $erreurr)
     $postcontenu = $_POST['contenu'];
     $posttitre = $_POST['titre'];
     $articleID = $_GET['id_billet'];
-    $postcontenu = filter_var($postcontenu,FILTER_SANITIZE_STRING);
     $posttitre = filter_var($posttitre,FILTER_SANITIZE_STRING);
     $articleID = filter_var($articleID,FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_postcontenuandposttitre($posttitre, $posttitre, $erreurr);

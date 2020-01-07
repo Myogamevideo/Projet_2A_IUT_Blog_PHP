@@ -31,7 +31,7 @@
                         white-space: nowrap;">' . $donnees->getcontenu() . '</td>
                         <td>' . $donnees->getdate_creation() . '</td>
                         <td><form method="POST" action="index.php?action=delArticle&id_billet=' . $donnees->getid() . '"> <input type="submit" value="Supprimer cette article"/></form></td>
-                        <td><form method="POST" action="index.php?action=modifierNews&id_billet=' . $donnees->getid() . '"> <input type="submit" value="Modifier cette article"/></form></td>
+                        <td><form method="POST" action="index.php?action=pagemodifiernews&id_billet=' . $donnees->getid() . '"> <input type="submit" value="Modifier cette article"/></form></td>
                     </tr>';
                     }
                 } else {
@@ -41,7 +41,7 @@
             </tbody>
         </table>
         <?php
-        echo '<form method="POST" action="index.php?action=ajouterNews"> <input type="submit" value="Ajouter un article"/></form>';
+        echo '<form method="POST" action="index.php?action=pageajouternews"> <input type="submit" value="Ajouter un article"/></form>';
         ?>
         <h3> Liste des commentaires :</h3>
         <table class="table">
@@ -84,7 +84,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php/*
+                <?php
                 foreach ($membre as $donnees) {
                     echo
                         '<tr>
@@ -95,7 +95,7 @@
                         <td>' . $donnees->getstatu() . '</td>';
                     echo '<td><form method="POST" action="index.php?action=delMembre&id_membre=' . $donnees->getid() . '&pseudo=' . $donnees->getpseudo() . '"> <input type="submit" value="Supprimer ce membre"/></form></td>
                     </tr>';
-                }*/
+                }
                 ?>
             </tbody>
         </table>

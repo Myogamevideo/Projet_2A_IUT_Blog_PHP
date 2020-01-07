@@ -1,13 +1,10 @@
 <?php
 require_once('model/modelmembre.php');
 
-class Membre
+class User
 {
-    function __construct()
-    {
-        $bdd = DBApp::getDatabase();
-        $erreurr = array();
-        
+    function __construct($bdd,$erreurr)
+    {   
         try {
             if (isset($_GET['action'])) {
                 $action = $_REQUEST['action'];
@@ -25,7 +22,7 @@ class Membre
                         delCommentaireMembre($bdd, $erreurr);
                         break;
                     case 'pageprofil':
-                        PageProfil($bdd, $erreurr);
+                        PageProfil($bdd);
                         break;
                     case 'inscription':
                         Inscription($bdd, $erreurr);
@@ -92,6 +89,11 @@ function Connexion($bdd, $erreurr)
     } else {
         $postcase = null;
     }
+    $cookiestatu = filter_var($cookiestatu,FILTER_SANITIZE_STRING);
+    $cookiepseudo = filter_var($cookiepseudo,FILTER_SANITIZE_STRING);
+    $pseudo = filter_var($pseudo,FILTER_SANITIZE_STRING);
+    $statu = filter_var($statu,FILTER_SANITIZE_STRING);
+    $id = filter_var($id,FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_postpassword($postpassword, $erreurr);
     Validator::validation_postpseudo($postpseudo, $erreurr);
     $modelmembre = new ModeleMembre();
@@ -126,6 +128,9 @@ function Inscription($bdd, $erreurr)
     $postconfig_password = $_POST['confi_password'];
     $postemail = $_POST['email'];
     $pseudo = filter_var($pseudo,FILTER_SANITIZE_STRING);
+    $postpseudo = filter_var($postpseudo,FILTER_SANITIZE_STRING);
+    $postemail = filter_var($postemail,FILTER_SANITIZE_STRING);
+    $postemail = filter_var($postemail,FILTER_SANITIZE_STRING);
     Validator::validation_postpassword($postpassword, $erreurr);
     Validator::validation_postpseudo($postpseudo, $erreurr);
     Validator::validation_postconfig_password($postconfig_password, $erreurr);
@@ -191,8 +196,7 @@ function delCommentaireMembre($bdd, $erreurr)
     $modelmembre->delCommentaire($commentaireID, $bdd);
 }
 
-
-function PageProfil($bdd, $erreurr)
+function PageProfil($bdd)
 {
     if (isset($_SESSION['statu'])) {
         $statu = $_SESSION['statu'];

@@ -89,7 +89,6 @@ function addCommententaire($bdd, $erreurr)
     $articleID = $_GET['id_billet'];
     $postcommentaire = $_POST['commentaire'];
     $pseudo = filter_var($pseudo,FILTER_SANITIZE_STRING);
-    $postcommentaire = filter_var($postcommentaire,FILTER_SANITIZE_STRING);
     $articleID = filter_var($articleID,FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_articleIDandpseudoandpostcommentaire($articleID, $pseudo, $postcommentaire, $erreurr);
     $modelindex = new ModeleIndex();

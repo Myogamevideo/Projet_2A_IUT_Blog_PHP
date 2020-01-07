@@ -1,6 +1,6 @@
 <?php
 require('controller/admin.php');
-require('controller/membre.php');
+require('controller/user.php');
 require('controller/news.php');
 class FrontController
 {
@@ -10,8 +10,8 @@ class FrontController
         $erreurr = array();
 
         $listeActionNews = array('listeArticle', 'Article', 'addCommententaire', 'delCommentaireNews');
-        $listeActionMembre = array('connexion', 'pageconnexion', 'pageinscription', 'delcommentaireMembre', 'pageprofil', 'inscription', 'deconnexion', 'modifierprofil');
-        $listeActionAdmin = array('admin', 'delArticle', 'delCommentaireAdmin', 'delMembreAdmin', 'ajouterNews', 'modifierNews', 'pagemodifiernews', 'pageajouternews');
+        $listeActionUser = array('connexion', 'pageconnexion', 'pageinscription', 'delcommentaireMembre', 'pageprofil', 'inscription', 'deconnexion', 'modifierprofil');
+        $listeActionAdmin = array('admin', 'delArticle', 'delCommentaireAdmin', 'delMembre', 'ajouterNews', 'modifierNews', 'pagemodifiernews', 'pageajouternews');
 
         session_start();
 
@@ -21,8 +21,8 @@ class FrontController
                 if (in_array($action, $listeActionNews)) {
                     $news = new News($bdd, $erreurr);
                 }
-                if (in_array($action, $listeActionMembre)) {
-                    $membre = new Membre();
+                if (in_array($action, $listeActionUser)) {
+                    $user = new User($bdd,$erreurr);
                 }
                 if (in_array($action, $listeActionAdmin)) {
                     $admin = new Admin($bdd, $erreurr);

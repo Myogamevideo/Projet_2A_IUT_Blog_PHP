@@ -1,7 +1,7 @@
 <main role="main" class="flex-shrink-0">
     <div class="container">
         <h1 class="mt-5"> Profil :</h1>
-        <?php
+        <?php 
         $date = date("d/m/Y");
         $date_inscription = date_create($profil->getdate_inscription());
         $date_inscription = date_format($date_inscription, 'd/m/Y');
@@ -50,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
+                <?php 
                 foreach($comments as $donnees) {
                     echo
                         '<tr>
