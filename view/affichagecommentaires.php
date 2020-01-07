@@ -30,7 +30,7 @@
             echo 'De <span style="color:blue">' . $comments->getauteur() . '</span> le ' . $comments->getdate_commentaire();
             echo '<div> <em>' . $comments->getcommentaire() . '</em></div>';
             if (isset($pseudo) and $pseudo == $comments->getauteur()) {
-                echo '<form method="POST" action="index.php?id_commentaire=' . $comments->getid() . '&amp;id_billet=' . $articleID . '&amp;action=delCommentaire">';
+                echo '<form method="POST" action="index.php?id_commentaire=' . $comments->getid() . '&amp;id_billet=' . $articleID . '&amp;action=delCommentaireNews">';
                 echo '<button type="submit" class="btn btn-lg btn-primary btn-block"> Supprimer votre commentaire </button> ';
                 echo '</form>';
                 echo '</div>';

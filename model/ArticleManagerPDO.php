@@ -13,6 +13,17 @@ class ArticleManagerPDO
     return $this->db->query($query, array(':titre' => $news->gettitre(), ':continu' => $news->getcontenu()));
   }
 
+  function postNews($postcontenu, $posttitre)
+  {
+    $query = 'SELECT count(*) AS nbr FROM billets WHERE titre=:titre';
+    $requete = $this->db->query($query, array(':titre' => (string) $posttitre));
+    $donne = $requete->fetch(PDO::FETCH_ASSOC);
+    if ($donne['nbr'] == 0) {
+      $query = 'INSERT INTO billets(titre, contenu, date_creation) VALUES (:titre, :contenu, NOW())';
+      return $this->db->query($query, array('titre' => $posttitre, 'contenu' => $postcontenu));
+    }
+  }
+
   public function count()
   {
     $query = 'SELECT COUNT(*) FROM billets';
@@ -50,20 +61,22 @@ class ArticleManagerPDO
         $articles = $this->db->query($query);
       }
     }
-    $news = $articles->fetch();
+    $articles->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Article');
+    $news = $articles->fetchAll();
     return $news;
   }
 
   public function getListByTitre($articles)
   {
-    foreach($articles as $a){
+    $listearticle = array();
+    foreach ($articles as $a) {
       $query = 'SELECT id, contenu, titre, date_creation FROM billets WHERE titre = :titre ORDER BY date_creation';
-      $requete = $this->db->query($query, array(':titre' => $a));
+      $requete = $this->db->query($query, array(':titre' => $a->gettitre()));
       $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Article');
-      $listeArticle = $requete->fetchAll();
-      $requete->closeCursor();
-      return $listeArticle;
+      $Articles = $requete->fetch();
+      array_push($listearticle, $Articles);
     }
+    return $listearticle;
   }
 
   public function getUnique($id)
@@ -88,5 +101,16 @@ class ArticleManagerPDO
     $nbarticle = $requete->fetch(PDO::FETCH_ASSOC);
     $requete->closeCursor();
     return $nbarticle;
+  }
+
+  public function modifNews($postcontenu, $posttitre, $articleID)
+  {
+    $query = 'SELECT count(*) AS nbr FROM billets WHERE titre=:titre';
+    $requete = $this->db->query($query, array(':titre' => (string) $posttitre));
+    $donne = $requete->fetch(PDO::FETCH_ASSOC);
+    if ($donne['nbr'] == 0) {
+      $query = 'UPDATE billets SET titre=:titre, contenu=:contenu, date_creation=NOW() WHERE id=:id';
+      return $this->db->query($query, array(':titre' => (string) $posttitre, ':contenu' => (string) $postcontenu, ':id' => (int) $articleID));
+    }
   }
 }

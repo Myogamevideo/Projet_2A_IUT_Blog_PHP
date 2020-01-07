@@ -19,16 +19,16 @@
                         <a class="nav-link" href="index.php">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="membre.php?action=inscription">Inscription</a>
+                        <a class="nav-link" href="index.php?action=pageinscription">Inscription</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="membre.php?action=connexion">Connexion</a>
+                        <a class="nav-link" href="index.php?action=pageconnexion">Connexion</a>
                     </li>
                     <?php
                     if (isset($pseudo) and $pseudo != NULL) {
-                        echo '<a class="nav-link" href="membre.php?action=deconnexion">Deconnexion</a>';
+                        echo '<a class="nav-link" href="index.php?action=deconnexion">Deconnexion</a>';
                     } else {
-                        echo '<a class="nav-link disabled" href="membre.php?action=deconnexion" tabindex="-1" aria-disabled="true">Deconnexion</a>';
+                        echo '<a class="nav-link disabled" href="index.php?action=deconnexion" tabindex="-1" aria-disabled="true">Deconnexion</a>';
                     }
                     ?>
                     </li>
@@ -36,10 +36,10 @@
                 <div class="col-4 d-flex justify-content-end align-items-center">
                     <?php
                     if (isset($statu) and $statu == 'admin') {
-                        echo '<a class="btn btn-sm btn-outline-secondary" href="membre.php?action=profil">Profil</a>';
-                        echo '<a class="btn btn-sm btn-outline-secondary" href="admin.php?action=admin">Page administration</a>';
+                        echo '<a class="btn btn-sm btn-outline-secondary" href="index.php?action=pageprofil">Profil</a>';
+                        echo '<a class="btn btn-sm btn-outline-secondary" href="index.php?action=admin">Page administration</a>';
                     } elseif (isset($statu)) {
-                        echo '<a class="btn btn-sm btn-outline-secondary" href="profil.php">Profil</a>';
+                        echo '<a class="btn btn-sm btn-outline-secondary" href="index.php?action=pageprofil">Profil</a>';
                     }
                     ?>
                 </div>

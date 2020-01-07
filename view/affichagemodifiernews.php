@@ -2,10 +2,8 @@
     <div class="container">
         <h1 class="mt-5"> Modification de la news :</h1>
         <?php
-        $donne = $article->fetch();
-
-        echo '<h2>   (' . $articleID . ') ' . $donne['titre'] . '</h2>';
-        echo '<form method="POST" action="admin.php?id_billet=' . $articleID . '&action=modifierNews">';
+        echo '<h2>   (' . $articleID . ') ' . $article->gettitre() . '</h2>';
+        echo '<form method="POST" action="index.php?id_billet=' . $articleID . '&action=modifierNews">';
         ?>
         <table class="table">
             <thead class="thead-dark">
@@ -24,7 +22,7 @@
                 <tr>
                     <th scope="row">titre</th>
                     <td>varchar (255)</td>
-                    <td><textarea name="titre" rows="5" cols="5" class="form-control" /><?php echo $donne['titre']; ?></textarea></td>
+                    <td><textarea name="titre" rows="5" cols="5" class="form-control" /><?php echo $article->gettitre(); ?></textarea></td>
                 </tr>
                 <tr>
                     <th scope="row">contenu</th>
@@ -34,13 +32,13 @@
                         <button type="button" class="btn btn-secondary" disabled="disabled"><em>[i] Texte en italique [/i]</em></button>
                         <button type="button" class="btn btn-warning" disabled="disabled"><span style="color:red">[color=red] Texte en rouge [/color]</span></button>
                         <button type="button" class="btn btn-link" disabled="disabled"><a href="">Lien : http://...</a></button>
-                        <textarea name="contenu" rows="5" cols="5" class="form-control" /><?php echo $donne['contenu']; ?></textarea>
+                        <textarea name="contenu" rows="5" cols="5" class="form-control" /><?php echo $article->getcontenu(); ?></textarea>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">date_creation</th>
                     <td>datetime</td>
-                    <td><input type="text" name="date_creation" id="date_creation" disabled="disabled" value="<?php echo $donne['date_creation']; ?>" /></td>
+                    <td><input type="text" name="date_creation" id="date_creation" disabled="disabled" value="<?php echo $article->getdate_creation(); ?>" /></td>
                 </tr>
             </tbody>
         </table>

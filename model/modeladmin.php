@@ -1,56 +1,108 @@
 <?php
-function getBanni($statu)
-{
-    if (isset($statu) and $statu == 'banni') {
-        header('location: affichagebanni.php');
+class ModeleAdmin{
+    public function PageAdmin($pseudo,$recherche,$statu,$bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managermembre = new MembreManagerPDO($bdd);
+        $titre = 'Admin';
+        $comments = $managercomments->getList();
+        $membre = $managermembre->getList();
+        $news = $managernews->findArticle((string)$recherche);
+        $listearticle = $managernews->getListByTitre($news);
+        ob_start();
+        require('view/affichageadmin.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    
+    public function delArticle($articleID, $bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $ligneaffecter = $managernews->delete((int)$articleID);
+        if ($ligneaffecter == false) {
+            throw new Exception('Impossible de supprimer l\'article !');
+        } else {
+            header('Location: index.php?action=admin');
+        }
+    }
+    
+    public function delCommentaire($commentaireID, $bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $ligneaffecter = $managercomments->delete((int)$commentaireID);
+        if ($ligneaffecter == false) {
+            throw new Exception('Impossible de supprimer le commentaire !');
+        } else {
+            header('Location: index.php?action=admin');
+        }
+    }
+    
+    public function delMembre($membreID, $getpseudo, $bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managermembre = new MembreManagerPDO($bdd);
+        $ligneaffecter1 = $managermembre->delete((int)$membreID);
+        $ligneaffecter2 = $managercomments->delete((string)$getpseudo);
+        if ($ligneaffecter1 == false or $ligneaffecter2 == false) {
+            throw new Exception('Impossible de supprimer le membre !');
+        } else {
+            header('Location: index.php?action=admin');
+        }
+    }
+    
+    
+    public function PageajouterNews($pseudo,$statu, $bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $titre = 'Ajouter article';
+        ob_start();
+        require('view/affichageajouternews.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function addNews($postcontenu, $posttitre, $bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $ligneaffecter = $managernews->postNews((string)$postcontenu, (string)$posttitre);
+        if($ligneaffecter == false) {
+            throw new Exception('Impossible d\'ajouter l\'article !');
+        } else {
+            header('Location: index.php?action=admin');
+        }
+    }
+    
+    public function PagemodifyNews($pseudo,$articleID,$statu,$bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $titre = 'Modifier article';
+        $article =  $managernews->getUnique((int)$articleID);
+        ob_start();
+        require('view/affichagemodifiernews.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function modifyNews($postcontenu, $posttitre, $articleID , $bdd)
+    {
+        $managernews = new ArticleManagerPDO($bdd);
+        $ligneaffecter = $managernews->modifNews((string)$postcontenu, (string)$posttitre, (string)$articleID);
+        if ($ligneaffecter == false) {
+            throw new Exception('Impossible d\'ajouter l\'article !');
+        } else {
+            header('Location: index.php?action=admin');
+        }
     }
 }
 
-function postNews($bdd, $postcontenu, $posttitre)
-{
-    $postcontenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $postcontenu);
-    $postcontenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<em>$1</em>', $postcontenu);
-    $postcontenu = preg_replace('#\[color=(red|green|blue|yellow|purple|olive)\](.+)\[/color\]#isU', '<span style="color:$1">$2</span>', $postcontenu);
-    $postcontenu = preg_replace('#http://[a-z0-9._/-]+#i', '<a href="$0">$0</a>', $postcontenu);
-    $ligneaffecter1 = $bdd->prepare('select count(*) as nbr from billets where titre=?');
-    $ligneaffecter1->execute(array($posttitre));
-    $donne = $ligneaffecter1->fetch(PDO::FETCH_ASSOC);
-    if ($donne['nbr'] != 0) {
-        throw new Exception('<strong>Information : </strong> Titre dejà utilisé');
-    } else {
-        $ligneaffecter2 = $bdd->prepare('insert into billets (titre,contenu,date_creation) values (:titre,:contenu,now())');
-        $ligneaffecter2->execute(array(
-            'titre' => $posttitre,
-            'contenu' => $postcontenu,
-        ));
-        return array($ligneaffecter1, $ligneaffecter2);
-    }
-}
 
-function getArticle($bdd, $articleID)
-{
-    $article = $bdd->prepare('select * from billets where id=?');
-    $article->execute(array($articleID));
-    return $article;
-}
-
-function modifNews($bdd, $postcontenu, $posttitre, $articleID)
-{
-    $postcontenu = preg_replace('#\[b\](.+)\[/b\]#isU', '<strong>$1</strong>', $postcontenu);
-    $postcontenu = preg_replace('#\[i\](.+)\[/i\]#isU', '<em>$1</em>', $postcontenu);
-    $postcontenu = preg_replace('#\[color=(red|green|blue|yellow|purple|olive)\](.+)\[/color\]#isU', '<span style="color:$1">$2</span>', $postcontenu);
-    $postcontenu = preg_replace('#http://[a-z0-9._/-]+#i', '<a href="$0">$0</a>', $postcontenu);
-    $ligneaffecter1 = $bdd->prepare('select count(*) as nbr from billets where titre=?');
-    $ligneaffecter1->execute(array($posttitre));
-    $donne = $ligneaffecter1->fetch(PDO::FETCH_ASSOC);
-    if ($donne['nbr'] != 0) {
-        throw new Exception('<strong>Information : </strong> Titre dejà utilisé');
-    } else {
-        $ligneaffecter2 = $bdd->prepare('update billets set titre=:titre, contenu=:contenu, date_creation=now() where id="' . $articleID . '"');
-        $ligneaffecter2->execute(array(
-            'titre' => $posttitre,
-            'contenu' => $postcontenu,
-        ));
-    }
-    return array($ligneaffecter1, $ligneaffecter2);
-}

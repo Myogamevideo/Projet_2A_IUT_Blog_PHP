@@ -25,6 +25,12 @@ class CommentaireManagerPDO
     return $this->db->query($query,array(':id' => (int) $id));
   }
 
+  public function deleteWithPseudo($pseudo)
+  {
+    $query = 'DELETE FROM commentaires WHERE pseudo = :pseudo';
+    return $this->db->query($query,array(':pseudo' => (String) $pseudo));
+  }
+
   public function getList($debut = -1, $limite = -1)
   {
     $query = 'SELECT id, id_billet, auteur, commentaire, date_commentaire FROM commentaires ORDER BY id DESC';

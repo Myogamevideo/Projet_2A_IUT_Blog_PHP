@@ -1,10 +1,112 @@
 <?php
-function getBanni($bdd, $pseudo, $statu)
-{
-    if (isset($statu) and $statu == 'banni') {
-        header('location: affichagebanni.php');
+class ModeleMembre{
+    public function Connexion($bdd,$id, $pseudo, $statu, $postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Connexion';
+        ob_start();
+        require('view/affichageconnexion.php');
+        $content = ob_get_clean();
+        $connexion = getConnexion($bdd,$postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu,$pseudo,$id,$statu);
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function PageConnexion($pseudo,$statu,$bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Connexion';
+        ob_start();
+        require('view/affichageconnexion.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function Inscription($bdd,$pseudo,$postpseudo, $postpassword, $postconfig_password, $postemail)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Inscription';
+        ob_start();
+        require('view/affichageinscription.php');
+        $content = ob_get_clean();
+        $inscription = getInscription($bdd,$postpseudo, $postpassword, $postconfig_password, $postemail);
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    
+    public function PageInscription($pseudo,$statu,$bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Inscription';
+        ob_start();
+        require('view/affichageinscription.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function Deconnexion()
+    {
+        getDeconnexion();
+    }
+    
+    public function ModifierProfil($pseudo,$postpseudo,$postemail, $bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managermembre = new MembreManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Profil';
+        $comments = $managercomments->getListCommentaireByPseudo($pseudo);
+        $profil = $managermembre->getUniqueByPseudo($pseudo);
+        ob_start();
+        require('view/affichageprofil.php');
+        $content = ob_get_clean();
+        $mem = new Membre(['id' => $profil->getid(),'pseudo' => $postpseudo,'pass' => $profil->getpass(),'email' => $postemail]);
+        $modifierprofil = $managersmembre->update($mem);
+        $modifiercommentaire = $managercomments->updateWithProfil($profil->getid() , $postpseudo);
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function PageProfil($pseudo,$statu,$bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $managermembre = new MembreManagerPDO($bdd);
+        $managernews = new ArticleManagerPDO($bdd);
+        $titre = 'Profil';
+        $comments = $managercomments->getListCommentaireByPseudo($pseudo);
+        $profil = $managermembre->getUniqueByPseudo($pseudo);
+        ob_start();
+        require('view/affichageprofil.php');
+        $content = ob_get_clean();
+        $nbcommentaire = $managercomments->getNBCommentaire((string) $pseudo);
+        $nbarticle = $managernews->getNBArticle();
+        require('view/template.php');
+    }
+    
+    public function delCommentaire($commentaireID, $bdd)
+    {
+        $managercomments = new CommentaireManagerPDO($bdd);
+        $ligneaffecter = $managercomments->delete($commentaireID);
+        if ($ligneaffecter == false) {
+            throw new Exception('Impossible de supprimer le commentaire !');
+        } else {
+            header('Location: index.php?action=profil');
+        }
     }
 }
+
 
 function getConnexion($db, $postpseudo, $postpassword, $postcase, $cookiepseudo, $cookiepassword, $cookiestatu,$pseudo,$id,$statu)
 {
@@ -91,7 +193,7 @@ function getInscription($db, $postpseudo, $postpassword, $postconfig_password, $
                         ':pass' => $pass_hach,
                         ':email' => $postemail,
                         ':statu'  => 'null'));
-                    header('location: membre.php?action=connexion');
+                    header('location: index.php?action=pageconnexion');
                 } else {
                     throw new Exception('<strong>Information : </strong> Adresse email non valide');
                 }
@@ -102,7 +204,7 @@ function getInscription($db, $postpseudo, $postpassword, $postconfig_password, $
     }
 }
 
-function getDeconnexion($bdd)
+function getDeconnexion()
 {
     $_SESSION = array();
     session_destroy();
@@ -124,7 +226,9 @@ function updateProfil(Membre $profil , $pseudo , $email)
     $query = 'UPDATE commentaires SET auteur = :pseudo WHERE auteur = "' . $profil->getpseudo() . '"';
     $requete = $this->db->query($query, array(':pseudo' => (String) $pseudo));
     $_SESSION['pseudo'] = $pseudo;
-    header('location: membre.php?action=profil');
+    header('location: index.php?action=profil');
   }
 }
+
+
 

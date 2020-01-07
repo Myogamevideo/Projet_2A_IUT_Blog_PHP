@@ -31,7 +31,6 @@ class Article
   {
     return !(empty($this->titre) || empty($this->contenu));
   }
-
   public function getid()
   {
     return $this->id;

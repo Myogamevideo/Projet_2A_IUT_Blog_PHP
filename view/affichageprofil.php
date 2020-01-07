@@ -5,7 +5,7 @@
         $date = date("d/m/Y");
         $date_inscription = date_create($profil->getdate_inscription());
         $date_inscription = date_format($date_inscription, 'd/m/Y');
-        echo '<form method="POST" action="membre.php?action=profil">';
+        echo '<form method="POST" action="index.php?action=profil">';
         ?>
         <table class="table">
             <thead class="thead-dark">
@@ -33,7 +33,7 @@
                 </tr>
                 <tr>
                     <th scope="row">statu</th>
-                    <td><input name="statu" class="form-control" disabled="disabled" value="<?php echo $profil->getsatu(); ?>" /></td>
+                    <td><input name="statu" class="form-control" disabled="disabled" value="<?php echo $profil->getstatu(); ?>" /></td>
                 </tr>
             </tbody>
         </table>
@@ -57,7 +57,7 @@
                         <td>' . $donnees->getauteur() . '</td>
                         <td>' . $donnees->getcommentaire() . '</td>
                         <td>' . $donnees->getdate_commentaire() . '</td>
-                        <td><form method="POST" action="membre.php?action=profil&id_commentaire=' . $donnees->getid() . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
+                        <td><form method="POST" action="index.php?action=profil&id_commentaire=' . $donnees->getid() . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
                     </tr>';
                 }
                 ?>

@@ -10,7 +10,7 @@ class MembreManagerPDO
   protected function add(Membre $mem)
   {
     $query = 'INSERT INTO membres(pseudo, pass, email, date_inscription, statu) VALUES(:pseudo,:pass,:email,NOW(),:statu)';
-    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail(), ':statu' => $mem->getsatu()));
+    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail(), ':statu' => $mem->getstatu()));
   }
 
   public function count()
@@ -41,7 +41,7 @@ class MembreManagerPDO
   public function getUniqueByID($id)
   {
     $query = 'SELECT id, pseudo, pass, email, date_inscription, statu FROM membres WHERE id = :id';
-    $requete = $this->db->query($query, array(':id_billet' => (int) $id));
+    $requete = $this->db->query($query, array(':id' => (int) $id));
     $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Membre');
     $membre = $requete->fetch();
     return $membre;
@@ -58,7 +58,7 @@ class MembreManagerPDO
 
   public function update(Membre $mem)
   {
-    $query = 'UPDATE membres SET pseudo = :pseudo, pass = :pass, email= :email WHERE id = :id';
-    return $this->db->query($query, array(':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail() , ':id' => $mem->getid()));
+    $query = 'UPDATE membres SET pseudo = :pseudo, pass = :pass, email= :email, statu = :statu WHERE id = :id';
+    return $this->db->query($query, array(':statu' => $mem->getstatu(), ':pseudo' => $mem->getpseudo(), ':pass' => $mem->getpass(), ':email' => $mem->getemail() , ':id' => $mem->getid()));
   }
 }
