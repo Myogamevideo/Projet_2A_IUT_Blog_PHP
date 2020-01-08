@@ -46,17 +46,8 @@
             </div>
         </nav>
     </header>
+
     <body>
-        <?php 
-        if(!empty($erreurr)){
-            echo '<div class="alert alert-danger">';
-            foreach($erreurr as $error){
-                echo '<p>'.$error.'</p>';
-            }
-            echo '</div>';
-        }
-        ?>
-        
         <?= $content ?>
     </body>
     <footer class="footer mt-auto py-3">
@@ -72,10 +63,4 @@
             ?>
         </div>
     </footer>
-</body>
-<?php
-
-?>
-</html>
-
 </html>

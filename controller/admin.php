@@ -3,7 +3,7 @@ require_once('model/modeladmin.php');
 
 class Admin
 {
-    function __construct($bdd,$erreurr)
+    function __construct($bdd, $erreurr)
     {
         try {
             if (isset($_GET['action'])) {
@@ -67,17 +67,17 @@ function PageAdmin($bdd)
     } else {
         $statu = null;
     }
-    $pseudo = filter_var($pseudo,FILTER_SANITIZE_STRING);
-    $recherche = filter_var($recherche,FILTER_SANITIZE_STRING);
-    $statu = filter_var($statu,FILTER_SANITIZE_STRING);
+    $pseudo = filter_var($pseudo, FILTER_SANITIZE_STRING);
+    $recherche = filter_var($recherche, FILTER_SANITIZE_STRING);
+    $statu = filter_var($statu, FILTER_SANITIZE_STRING);
     $modeladmin = new ModeleAdmin();
-    $modeladmin->PageAdmin($pseudo, $recherche, $statu,$bdd);
+    $modeladmin->PageAdmin($pseudo, $recherche, $statu, $bdd);
 }
 
 function delArticle($bdd, $erreurr)
 {
     $articleID = $_GET['id_billet'];
-    $articleID = filter_var($articleID,FILTER_SANITIZE_NUMBER_INT);
+    $articleID = filter_var($articleID, FILTER_SANITIZE_NUMBER_INT);
     Validator::vaidation_articleID($articleID, $erreurr);
     $modeladmin = new ModeleAdmin();
     $modeladmin->delArticle($articleID, $bdd);
@@ -86,7 +86,7 @@ function delArticle($bdd, $erreurr)
 function delCommentaireAdmin($bdd, $erreurr)
 {
     $commentaireID = $_GET['id_commentaire'];
-    $commentaireID = filter_var($commentaireID,FILTER_SANITIZE_NUMBER_INT);
+    $commentaireID = filter_var($commentaireID, FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_commentaireID($commentaireID, $erreurr);
     $modeladmin = new ModeleAdmin();
     $modeladmin->delCommentaire($commentaireID, $bdd);
@@ -95,9 +95,9 @@ function delCommentaireAdmin($bdd, $erreurr)
 function delMembre($bdd, $erreurr)
 {
     $membreID = $_GET['id_membre'];
-    $membreID = filter_var($membreID,FILTER_SANITIZE_NUMBER_INT);
+    $membreID = filter_var($membreID, FILTER_SANITIZE_NUMBER_INT);
     $getpseudo = $_GET['pseudo'];
-    $getpseudo = filter_var($getpseudo,FILTER_SANITIZE_STRING);
+    $getpseudo = filter_var($getpseudo, FILTER_SANITIZE_STRING);
     Validator::validation_membreIDandgetpseudo($membreID, $getpseudo, $erreurr);
     $modeladmin = new ModeleAdmin();
     $modeladmin->delMembre($membreID, $getpseudo, $bdd);
@@ -107,7 +107,7 @@ function addNews($bdd, $erreurr)
 {
     $postcontenu = $_POST['contenu'];
     $posttitre = $_POST['titre'];
-    $posttitre = filter_var($posttitre,FILTER_SANITIZE_STRING);
+    $posttitre = filter_var($posttitre, FILTER_SANITIZE_STRING);
     Validator::validation_postcontenuandposttitre($postcontenu, $posttitre, $erreurr);
     $modeladmin = new ModeleAdmin();
     $modeladmin->addNews($postcontenu, $posttitre, $bdd);
@@ -125,10 +125,10 @@ function PageajouterNews($bdd)
     } else {
         $statu = null;
     }
-    $pseudo = filter_var($pseudo,FILTER_SANITIZE_STRING);
-    $statu = filter_var($statu,FILTER_SANITIZE_STRING);
+    $pseudo = filter_var($pseudo, FILTER_SANITIZE_STRING);
+    $statu = filter_var($statu, FILTER_SANITIZE_STRING);
     $modeladmin = new ModeleAdmin();
-    $modeladmin->PageajouterNews($pseudo, $statu,$bdd);
+    $modeladmin->PageajouterNews($pseudo, $statu, $bdd);
 }
 
 function modifyNews($bdd, $erreurr)
@@ -136,15 +136,15 @@ function modifyNews($bdd, $erreurr)
     $postcontenu = $_POST['contenu'];
     $posttitre = $_POST['titre'];
     $articleID = $_GET['id_billet'];
-    $posttitre = filter_var($posttitre,FILTER_SANITIZE_STRING);
-    $articleID = filter_var($articleID,FILTER_SANITIZE_NUMBER_INT);
+    $posttitre = filter_var($posttitre, FILTER_SANITIZE_STRING);
+    $articleID = filter_var($articleID, FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_postcontenuandposttitre($posttitre, $posttitre, $erreurr);
     Validator::vaidation_articleID($articleID, $erreurr);
     $modeladmin = new ModeleAdmin();
     $modeladmin->modifyNews($postcontenu, $posttitre, $articleID, $bdd);
 }
 
-function PagemodifyNews($bdd,$erreurr)
+function PagemodifyNews($bdd, $erreurr)
 {
     if (isset($_SESSION['pseudo'])) {
         $pseudo = $_SESSION['pseudo'];
@@ -157,8 +157,8 @@ function PagemodifyNews($bdd,$erreurr)
         $statu = null;
     }
     $articleID = $_GET['id_billet'];
-    $articleID = filter_var($articleID,FILTER_SANITIZE_NUMBER_INT);
+    $articleID = filter_var($articleID, FILTER_SANITIZE_NUMBER_INT);
     Validator::vaidation_articleID($articleID, $erreurr);
     $modeladmin = new ModeleAdmin();
-    $modeladmin->PagemodifyNews($pseudo, $articleID, $statu,$bdd);
+    $modeladmin->PagemodifyNews($pseudo, $articleID, $statu, $bdd);
 }

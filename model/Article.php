@@ -26,7 +26,6 @@ class Article
       }
     }
   }
-
   public function isValid()
   {
     return !(empty($this->titre) || empty($this->contenu));
