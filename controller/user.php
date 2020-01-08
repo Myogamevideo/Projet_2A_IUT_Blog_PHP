@@ -190,10 +190,10 @@ function ModifierProfil($bdd, $erreurr)
 function delCommentaireMembre($bdd, $erreurr)
 {
     $commentaireID = $_GET['id_commentaire'];
-    $commentaireID = filter_var($commentaireID,FILTER_SANITIZE_NUMBER_INT);
+    $commentaireID = filter_var($commentaireID, FILTER_SANITIZE_NUMBER_INT);
     Validator::validation_commentaireID($commentaireID, $erreurr);
     $modelmembre = new ModeleMembre();
-    $modelmembre->delCommentaire($commentaireID, $bdd);
+    $modelmembre->delCommentaireMembre($commentaireID, $bdd);
 }
 
 function PageProfil($bdd)

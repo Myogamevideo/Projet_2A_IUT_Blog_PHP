@@ -95,14 +95,14 @@ class ModeleMembre{
         require('view/template.php');
     }
     
-    public function delCommentaire($commentaireID, $bdd)
+    public function delCommentaireMembre($commentaireID, $bdd)
     {
         $managercomments = new CommentaireManagerPDO($bdd);
-        $ligneaffecter = $managercomments->delete($commentaireID);
+        $ligneaffecter = $managercomments->delete((int)$commentaireID);
         if ($ligneaffecter == false) {
             throw new Exception('Impossible de supprimer le commentaire !');
         } else {
-            header('Location: index.php?action=profil');
+            header('Location: index.php?action=pageprofil');
         }
     }
 }

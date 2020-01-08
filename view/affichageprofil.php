@@ -57,7 +57,7 @@
                         <td>' . $donnees->getauteur() . '</td>
                         <td>' . $donnees->getcommentaire() . '</td>
                         <td>' . $donnees->getdate_commentaire() . '</td>
-                        <td><form method="POST" action="index.php?action=profil&id_commentaire=' . $donnees->getid() . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
+                        <td><form method="POST" action="index.php?action=delCommentaireMembre&id_commentaire=' . $donnees->getid() . '"> <input type="submit" value="Supprimer ce commentaire"/></form></td>
                     </tr>';
                 }
                 ?>

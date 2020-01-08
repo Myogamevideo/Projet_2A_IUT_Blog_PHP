@@ -10,7 +10,7 @@ class FrontController
         $erreurr = array();
 
         $listeActionNews = array('listeArticle', 'Article', 'addCommententaire', 'delCommentaireNews');
-        $listeActionUser = array('connexion', 'pageconnexion', 'pageinscription', 'delcommentaireMembre', 'pageprofil', 'inscription', 'deconnexion', 'modifierprofil');
+        $listeActionUser = array('connexion', 'pageconnexion', 'pageinscription', 'delCommentaireMembre', 'pageprofil', 'inscription', 'deconnexion', 'modifierprofil');
         $listeActionAdmin = array('admin', 'delArticle', 'delCommentaireAdmin', 'delMembre', 'ajouterNews', 'modifierNews', 'pagemodifiernews', 'pageajouternews');
 
         session_start();

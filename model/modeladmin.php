@@ -71,7 +71,7 @@ class ModeleAdmin{
     public function addNews($postcontenu, $posttitre, $bdd)
     {
         $managernews = new ArticleManagerPDO($bdd);
-        $ligneaffecter = $managernews->postNews((string)$postcontenu, (string)$posttitre);
+        $ligneaffecter = $managernews->postNews($postcontenu, (string)$posttitre);
         if($ligneaffecter == false) {
             throw new Exception('Impossible d\'ajouter l\'article !');
         } else {
@@ -96,9 +96,9 @@ class ModeleAdmin{
     public function modifyNews($postcontenu, $posttitre, $articleID , $bdd)
     {
         $managernews = new ArticleManagerPDO($bdd);
-        $ligneaffecter = $managernews->modifNews((string)$postcontenu, (string)$posttitre, (string)$articleID);
+        $ligneaffecter = $managernews->modifNews($postcontenu, (string)$posttitre, (int)$articleID);
         if ($ligneaffecter == false) {
-            throw new Exception('Impossible d\'ajouter l\'article !');
+            throw new Exception('Impossible de modifier l\'article !');
         } else {
             header('Location: index.php?action=admin');
         }

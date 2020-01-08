@@ -110,7 +110,7 @@ class ArticleManagerPDO
     $donne = $requete->fetch(PDO::FETCH_ASSOC);
     if ($donne['nbr'] == 0) {
       $query = 'UPDATE billets SET titre=:titre, contenu=:contenu, date_creation=NOW() WHERE id=:id';
-      return $this->db->query($query, array(':titre' => (string) $posttitre, ':contenu' => (string) $postcontenu, ':id' => (int) $articleID));
+      return $this->db->query($query, array(':titre' => (string) $posttitre, ':contenu' => $postcontenu, ':id' => (int) $articleID));
     }
   }
 }
